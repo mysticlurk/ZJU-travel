@@ -45,7 +45,7 @@ python main.py
 
 ## 项目结构
 ```
-Z-Journal/
+Z-Journey/
 ├── main.py
 ├── .env
 ├── templates/
