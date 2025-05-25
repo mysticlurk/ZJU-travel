@@ -31,6 +31,7 @@ pip install -r requirements.txt
 CUSTOM_API_KEY=你的OpenAI API Key
 BASE_URL=https://api.openai.com/v1
 SERPER_API_KEY=你的联网搜索Key
+SERPER_URL = "https://google.serper.dev/search"
 
 ```
 
