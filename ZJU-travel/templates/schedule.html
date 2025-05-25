@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日程表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Alibaba PuHuiTi 3.0', 'ABeeZee', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #E1F8FF 0%, #F0FBFF 100%);
+            color: #333;
+            width: 390px;
+            height: 100vh;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .container {
+            padding: 24px;
+            height: 100%;
+            overflow-y: auto;
+            /* 隐藏滚动条但保持滚动功能 */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* 隐藏 Webkit 浏览器的滚动条 */
+        .container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .header {
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            padding: 4px 0;
+            display: block;
+            text-align: left;
+            transition: transform 0.2s ease;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+
+        .back-button:active {
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-family: 'Alibaba PuHuiTi 3.0';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 1.2;
+            color: #333;
+            text-align: left;
+            margin-bottom: 24px;
+            padding-left: 4px;
+        }
+
+        .schedule-list {
+            position: relative;
+            width: 100%;
+            margin-bottom: 32px;
+        }
+
+        .schedule-card {
+            display: flex;
+            margin-bottom: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .schedule-item {
+            position: relative;
+            flex: 1.5;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .schedule-extension {
+            width: 100px;
+            background: #B4EFFF;
+            border-radius: 16px;
+            margin-left: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bookmark {
+            position: absolute;
+            left: 0;
+            top: 16px;
+        }
+
+        .bookmark-icon {
+            width: 20px;
+            height: 24px;
+            background: #FFBDBD;
+            border-radius: 4px;
+        }
+
+        .content {
+            margin-left: 16px;
+        }
+
+        .title {
+            font-family: 'Alibaba PuHuiTi 3.0';
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 1.4;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .title .example-text {
+            font-weight: 700;
+        }
+
+        .members {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .location-icon {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .extension-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .more {
+            text-align: right;
+            color: #666;
+            font-size: 14px;
+            margin: 12px 8px;
+        }
+
+        .section-title {
+            font-family: 'Alibaba PuHuiTi 3.0';
+            font-weight: 600;
+            font-size: 20px;
+            color: #333;
+            margin: 32px 0 16px;
+            padding-left: 4px;
+        }
+
+        .checked-list {
+            margin-bottom: 32px;
+        }
+
+        .checked-item {
+            background: linear-gradient(135deg, #FFF9C1 0%, #FFF5A3 100%);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .checked-item:hover {
+            transform: translateX(4px);
+        }
+
+        .checked-item .example-text {
+            font-weight: 700;
+        }
+
+        .check-icon {
+            margin-right: 12px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .publish-button {
+            width: 80%;
+            height: 48px;
+            background: linear-gradient(135deg, #FFBDBD 0%, #FF9B9B 100%);
+            border-radius: 24px;
+            border: none;
+            color: white;
+            font-family: 'Alibaba PuHuiTi 3.0';
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin: 32px auto;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 155, 155, 0.2);
+        }
+
+        .publish-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 155, 155, 0.3);
+        }
+
+        .media-section {
+            background: #FFFFFF;
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            margin-top: 32px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .media-section h2 {
+            font-family: 'Alibaba PuHuiTi 3.0';
+            font-weight: 600;
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .image-placeholder {
+            background: #F5F5F5;
+            border-radius: 12px;
+            padding-bottom: 100%;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .image-placeholder:hover {
+            background: #EEEEEE;
+        }
+
+        .add-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #999;
+            font-size: 24px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: #F5F5F5;
+            border-radius: 24px;
+            font-size: 14px;
+            color: #333;
+            transition: background-color 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            background: #EEEEEE;
+        }
+
+        input::placeholder {
+            color: #999;
+        }
+
+        .send-button {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #666666 0%, #4D4D4D 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #4D4D4D 0%, #333333 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="goBack()">←</button>
+        </div>
+        <h1 class="page-title">待出发</h1>
+
+        <div class="schedule-list">
+            <div class="schedule-card">
+                <div class="schedule-item">
+                    <div class="bookmark">
+                        <div class="bookmark-icon"></div>
+                    </div>
+                    <div class="content">
+                        <div class="title"><span class="example-text">【示例】</span>紫金港东区风味食堂</div>
+                        <div class="members">共2名成员</div>
+                    </div>
+                </div>
+                <div class="schedule-extension">
+                    <div class="location-icon">🌐</div>
+                    <div class="extension-text">------------</div>
+                </div>
+            </div>
+
+            <div class="schedule-card">
+                <div class="schedule-item">
+                    <div class="bookmark">
+                        <div class="bookmark-icon"></div>
+                    </div>
+                    <div class="content">
+                        <div class="title"><span class="example-text">【示例】</span>南华园</div>
+                        <div class="members">共1名成员</div>
+                    </div>
+                </div>
+                <div class="schedule-extension">
+                    <div class="location-icon">🌐</div>
+                    <div class="extension-text">------------</div>
+                </div>
+            </div>
+
+            <div class="more">更多</div>
+        </div>
+
+        <div class="section-title">已打卡</div>
+        <div class="checked-list">
+            <div class="checked-item">
+                <span class="check-icon">✓</span>
+                <span class="example-text">【示例】</span>南大门
+            </div>
+            <div class="checked-item">
+                <span class="check-icon">✓</span>
+                <span class="example-text">【示例】</span>启真湖
+            </div>
+        </div>
+
+        <button class="publish-button">一键发布旅途故事</button>
+
+        <div class="media-section">
+            <h2>图片视频</h2>
+            <p class="upload-text">快速发送照片</p>
+            <div class="image-grid">
+                <div class="image-placeholder">
+                    <div class="add-icon">+</div>
+                </div>
+                <div class="image-placeholder">
+                    <div class="add-icon">+</div>
+                </div>
+                <div class="image-placeholder">
+                    <div class="add-icon">+</div>
+                </div>
+                <div class="image-placeholder">
+                    <div class="add-icon">+</div>
+                </div>
+            </div>
+            <div class="input-area">
+                <input type="text" placeholder="写点什么吧......" />
+                <button class="send-button">📤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            // 检查是否有历史记录可以返回
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // 如果没有历史记录，可以跳转到默认页面或显示提示
+                alert('没有可返回的页面');
+                // 或者跳转到首页: window.location.href = '/';
+            }
+        }
+
+        // 也可以使用键盘事件支持 ESC 键返回
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                goBack();
+            }
+        });
+    </script>
+</body>
+</html>

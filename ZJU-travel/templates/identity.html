@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择您的身份</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ABeeZee:wght@400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            /* 移除 overflow: hidden，允许滚动 */
+            min-height: 100vh;
+            overflow-x: hidden; /* 只禁用横向滚动 */
+        }
+
+        /* 选择身份界面容器 */
+        .identity-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: #FFFFFF;
+            margin: 0 auto;
+            /* 移除固定宽高限制 */
+        }
+
+        /* 背景层 */
+        .background-layer {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: #D1F5FF;
+        }
+
+        /* 渐变覆盖层 */
+        .gradient-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, #002FFF 31.25%, rgba(255, 255, 255, 0) 100%);
+            mix-blend-mode: normal;
+            opacity: 0.16;
+        }
+
+        /* 主要内容框架 */
+        .main-frame {
+            position: relative;
+            width: 300px;
+            margin: 0 auto;
+            padding-top: 15vh; /* 使用视口高度单位 */
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* 主标题 */
+        .main-title {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            font-style: normal;
+            font-weight: 300;
+            font-size: clamp(32px, 8vw, 44px); /* 响应式字体大小 */
+            line-height: 1.2;
+            color: #FFFFFF;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        /* 副标题 */
+        .subtitle {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            font-style: normal;
+            font-weight: 300;
+            font-size: clamp(14px, 4vw, 16px);
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 8vh;
+        }
+
+        /* 身份选择网格 */
+        .identity-grid {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 30px;
+            z-index: 10;
+            margin-bottom: 10vh;
+        }
+
+        /* 身份选项按钮 */
+        .identity-option {
+            width: 100%;
+            aspect-ratio: 1;
+            max-width: 140px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .identity-option:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .identity-option:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* 身份图标 */
+        .identity-icon {
+            width: clamp(40px, 8vw, 50px);
+            height: clamp(40px, 8vw, 50px);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #9CC7FD 0%, #6BB6FF 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(20px, 5vw, 24px);
+            color: white;
+        }
+
+        /* 身份标签 */
+        .identity-label {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            font-size: clamp(12px, 3.5vw, 14px);
+            font-weight: 400;
+            color: #383838;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* 底部指示器 */
+        .bottom-indicator {
+            position: relative;
+            margin: 40px auto 60px auto;
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+        }
+
+        /* 选中状态 */
+        .identity-option.selected {
+            background: rgba(156, 199, 253, 0.9);
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .identity-option.selected .identity-icon {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F0F8FF 100%);
+            color: #9CC7FD;
+        }
+
+        .identity-option.selected .identity-label {
+            color: #FFFFFF;
+            font-weight: 500;
+        }
+
+        /* 按压效果 */
+        .button-pressed {
+            transform: translateY(-2px) scale(1.02) !important;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .main-frame {
+                width: 90%;
+                padding-top: 12vh;
+            }
+            
+            .identity-grid {
+                gap: 20px;
+                margin-bottom: 8vh;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .main-frame {
+                padding-top: 8vh;
+            }
+            
+            .subtitle {
+                margin-bottom: 5vh;
+            }
+            
+            .identity-grid {
+                margin-bottom: 5vh;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .identity-option:hover .identity-icon {
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        /* 安全区域适配 */
+        @supports (padding: max(0px)) {
+            .bottom-indicator {
+                margin-bottom: max(60px, env(safe-area-inset-bottom) + 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="identity-container">
+        <!-- 背景层 -->
+        <div class="background-layer"></div>
+        
+        <!-- 渐变覆盖层 -->
+        <div class="gradient-overlay"></div>
+        
+        <!-- 主要内容框架 -->
+        <div class="main-frame">
+            <div class="main-title">选择您的身份</div>
+            <div class="subtitle">此处是一句浙大标语</div>
+        </div>
+        
+        <!-- 身份选择网格 -->
+        <div class="identity-grid">
+            <button class="identity-option" data-identity="student">
+                <div class="identity-icon">🎓</div>
+                <div class="identity-label">学生</div>
+            </button>
+            
+            <button class="identity-option" data-identity="teacher">
+                <div class="identity-icon">👨‍🏫</div>
+                <div class="identity-label">教师</div>
+            </button>
+            
+            <button class="identity-option" data-identity="staff">
+                <div class="identity-icon">💼</div>
+                <div class="identity-label">职工</div>
+            </button>
+            
+            <button class="identity-option" data-identity="visitor">
+                <div class="identity-icon">👤</div>
+                <div class="identity-label">访客</div>
+            </button>
+        </div>
+        
+        <!-- 底部指示器 -->
+        <div class="bottom-indicator"></div>
+    </div>
+
+    <script>
+        let selectedIdentity = null;
+
+        function selectIdentity(element, identity) {
+            // 移除所有选中状态
+            document.querySelectorAll('.identity-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            element.classList.add('selected');
+            selectedIdentity = identity;
+            
+            // 添加点击反馈
+            element.style.transform = 'translateY(-2px) scale(1.02)';
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 150);
+            
+            // 延迟执行下一步操作
+            setTimeout(() => {
+                alert(`您选择的身份是: ${getIdentityName(identity)}`);
+                // 跳转到 home.html 页面
+                window.location.href = "home.html";
+            }, 300);
+        }
+
+        function getIdentityName(identity) {
+            const names = {
+                'student': '学生',
+                'teacher': '教师', 
+                'staff': '职工',
+                'visitor': '访客'
+            };
+            return names[identity] || identity;
+        }
+
+        // 为每个身份选项添加事件监听器
+        document.querySelectorAll('.identity-option').forEach(option => {
+            // 点击事件
+            option.addEventListener('click', function() {
+                const identity = this.getAttribute('data-identity');
+                selectIdentity(this, identity);
+            });
+
+            // 触摸开始效果
+            option.addEventListener('touchstart', function() {
+                this.classList.add('button-pressed');
+            });
+
+            // 触摸结束效果
+            option.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.classList.remove('button-pressed');
+                }, 150);
+            });
+        });
+
+        // 防止页面回弹效果（可选）
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成最佳路线</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #FFFFFF;
+            width: 390px;
+            height: 844px;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .back-arrow {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: transform 0.2s ease;
+            padding: 5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-arrow:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .back-arrow:active {
+            transform: scale(0.95);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 573px;
+            background: #E8F5E8;
+            overflow: hidden;
+        }
+        
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .bottom-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #FFFFFF;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .route-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: #717171;
+            margin-bottom: 20px;
+        }
+        
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .rating-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .rating-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #D9D9D9;
+        }
+        
+        .rating-text {
+            font-size: 14px;
+            color: #717171;
+            margin-left: 10px;
+        }
+        
+        .route-info {
+            margin-bottom: 25px;
+        }
+        
+        .route-distance {
+            font-size: 14px;
+            color: #717171;
+            margin-bottom: 15px;
+        }
+        
+        .route-length {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .distance-text {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .navigation-btn {
+            background: #9CC7FD;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+        
+        .navigation-btn:hover {
+            background: #7BB5FA;
+        }
+        
+        .hotel-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hotel-name {
+            font-size: 20px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .hotel-location {
+            font-size: 12px;
+            color: #717171;
+            margin-bottom: 15px;
+        }
+        
+        .hotel-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .hotel-description {
+            font-size: 11px;
+            color: #717171;
+            flex: 1;
+        }
+        
+        .hotel-reviews {
+            font-size: 12px;
+            color: #717171;
+        }
+        
+        .hotel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hotel-price {
+            font-size: 16px;
+            color: #717171;
+        }
+        
+        .payment-btn {
+            background: #9CC7FD;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="back-arrow" onclick="goBack()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="map-container">
+        <!-- Replace the placeholder with your actual map image -->
+        <img src="{{ url_for('static', filename='map.png') }}" alt="地图" class="map-image" 
+             onerror="console.log('图片加载失败:', this.src); this.style.background='#f0f0f0'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='<div style=&quot;color:#666; font-size:14px; text-align:center;&quot;>图片加载失败<br>请检查 map.png 是否存在</div>'"
+             onload="console.log('图片加载成功!')">
+    </div>
+    
+    <div class="bottom-panel">
+        <div class="route-section">
+            <h2 class="section-title">推荐路线</h2>
+            <p class="section-subtitle">途径以下景点</p>
+            
+            <div class="rating-section">
+                <div class="rating-dots">
+                    <div class="rating-dot"></div>
+                    <div class="rating-dot"></div>
+                    <div class="rating-dot"></div>
+                    <div class="rating-dot"></div>
+                </div>
+                <span class="rating-text">综合评价4.8分</span>
+            </div>
+            
+            <div class="route-info">
+                <div class="route-distance">点此切换路线</div>
+                <div class="route-length">
+                    <span class="distance-text">全程1.3km</span>
+                    <button class="navigation-btn">跳转导航</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 酒店卡片已移除 - 如需要可以重新添加 -->
+    </div>
+
+    <script>
+        function goBack() {
+            // 检查是否有历史记录可以返回
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // 如果没有历史记录，可以跳转到默认页面或显示提示
+                alert('没有可返回的页面');
+                // 或者跳转到首页: window.location.href = '/';
+            }
+        }
+
+        // 也可以使用键盘事件支持 ESC 键返回
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                goBack();
+            }
+        });
+    </script>
+</body>
+</html>

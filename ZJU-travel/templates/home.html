@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浙江大学紫金港校区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        /* 容器最大宽度 */
+        .container {
+            position: relative;
+            width: 390px;
+            height: 844px;
+            margin: 0 auto;
+            background: #FFFFFF;
+        }
+
+
+
+        /* 欢迎卡片 */
+        .welcome-card {
+            position: absolute;
+            width: 350px;
+            height: 80px;
+            left: 20px;
+            top: 30px;
+            background: linear-gradient(135deg, #A8D0FF 0%, #7FB8F0 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 4px 20px rgba(160, 208, 255, 0.3);
+        }
+
+        .welcome-text {
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 24px;
+            color: #FFFFFF;
+            flex: 1;
+        }
+
+        .welcome-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* 校园景点标题 */
+        .section-title {
+            position: absolute;
+            left: 20px;
+            top: 140px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .more-btn {
+            position: absolute;
+            right: 20px;
+            top: 140px;
+            font-size: 14px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        /* 景点滚动区域 */
+        .attractions-scroll-container {
+            position: absolute;
+            width: 100%;
+            height: 200px;
+            left: 0;
+            top: 170px;
+            overflow-x: scroll;
+            padding-left: 20px;
+        }
+
+        .attractions-scroll {
+            display: flex;
+            gap: 15px;
+            height: 100%;
+            width: max-content;
+        }
+
+        .attraction-card {
+            flex-shrink: 0;
+            width: 140px;
+            height: 180px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .attraction-image {
+            width: 100%;
+            height: 110px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* 使用Flask static目录下的真实图片 */
+        .attraction-image.img1 {
+            background-image: url('/static/1.jpg');
+        }
+
+        .attraction-image.img2 {
+            background-image: url('/static/2.jpg');
+        }
+
+        .attraction-image.img3 {
+            background-image: url('/static/3.jpg');
+        }
+
+        .attraction-image.img4 {
+            background-image: url('/static/4.jpg');
+        }
+
+        .attraction-image.img5 {
+            background-image: url('/static/5.jpg');
+        }
+
+        .attraction-image.img6 {
+            background-image: url('/static/6.jpg');
+        }
+
+        .attraction-info {
+            padding: 12px;
+        }
+
+        .attraction-name {
+            font-weight: 600;
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .attraction-desc {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .rating {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        .star.empty {
+            background: #ddd;
+        }
+
+        /* 功能按钮 */
+        .action-buttons {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: 390px;
+        }
+
+        .action-btn {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro-btn {
+            background: #FFF3CD;
+            color: #000;
+        }
+
+        .ai-btn {
+            background: #FFCCCB;
+            color: #000;
+        }
+
+        /* 本周校内活动 */
+        .activities-title {
+            position: absolute;
+            left: 20px;
+            top: 530px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .activities-container {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: 560px;
+            height: 120px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .activity-card {
+            flex: 1;
+            height: 100%;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-card:first-child {
+            background-image: url('/static/7.jpg');
+        }
+
+        .activity-card:last-child {
+            background-image: url('/static/8.jpg');
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            bottom: 0;
+            background: #FFFFFF;
+            border-top: 1px solid #F0F0F0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #999;
+            font-size: 11px;
+            cursor: pointer;
+            min-width: 50px;
+        }
+
+        .nav-item.active {
+            color: #7BB3F0;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #E5E5E5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-item.active .nav-icon {
+            background: #7BB3F0;
+            color: white;
+        }
+
+        /* AI图标特殊样式 */
+        .ai-icon {
+            width: 40px;
+            height: 40px;
+            background: #7BB3F0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            top: -5px;
+        }
+
+        /* 隐藏滚动条 */
+        .attractions-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .attractions-scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 欢迎卡片 -->
+        <div class="welcome-card">
+            <div class="welcome-text">
+                Hi，欢迎来到<br>浙江大学紫金港校区
+            </div>
+            <div class="welcome-icon">👋</div>
+        </div>
+
+        <!-- 校园景点标题 -->
+        <div class="section-title">校园景点</div>
+        <div class="more-btn">更多</div>
+
+        <!-- 校园景点滚动区域 -->
+        <div class="attractions-scroll-container">
+            <div class="attractions-scroll">
+                <div class="attraction-card">
+                    <div class="attraction-image img1"></div>
+                    <div class="attraction-info">
+                        <div class="attraction-name">求是大讲堂</div>
+                        <div class="attraction-desc">跟随我一起见证,Venice</div>
+                        <div class="rating">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star empty"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-image img2"></div>
+                    <div class="attraction-info">
+                        <div class="attraction-name">启真湖</div>
+                        <div class="attraction-desc">走在异国他乡的街道</div>
+                        <div class="rating">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-image img3"></div>
+                    <div class="attraction-info">
+                        <div class="attraction-name">南大门</div>
+                        <div class="attraction-desc">旅行本是一件轻松</div>
+                        <div class="rating">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star empty"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-image img4"></div>
+                    <div class="attraction-info">
+                        <div class="attraction-name">求是大讲堂</div>
+                        <div class="attraction-desc">跟随我一起见证,Venice</div>
+                        <div class="rating">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star empty"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-image img5"></div>
+                    <div class="attraction-info">
+                        <div class="attraction-name">启真湖</div>
+                        <div class="attraction-desc">走在异国他乡的街道</div>
+                        <div class="rating">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-image img6"></div>
+                    <div class="attraction-info">
+                        <div class="attraction-name">南大门</div>
+                        <div class="attraction-desc">旅行本是一件轻松</div>
+                        <div class="rating">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star empty"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能按钮 -->
+        <div class="action-buttons">
+            <button class="action-btn intro-btn" onclick="showIntro()">
+                浙大介绍
+            </button>
+            <button class="action-btn ai-btn" onclick="showAIGuide()">
+                AI助手使用指南
+            </button>
+        </div>
+
+        <!-- 本周校内活动 -->
+        <div class="activities-title">本周校内活动</div>
+
+        <!-- 活动区域 -->
+        <div class="activities-container">
+            <div class="activity-card"></div>
+            <div class="activity-card"></div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <span>首页</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🗺️</div>
+                <span>导览</span>
+            </div>
+            <div class="nav-item" data-page="chat">
+                <div class="ai-icon">AI</div>
+                <span>AI</span>
+            </div>
+            <div class="nav-item" data-page="schedule">
+                <div class="nav-icon">📅</div>
+                <span>活动</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showIntro() {
+            alert('浙大介绍功能');
+        }
+
+        function showAIGuide() {
+            alert('AI助手使用指南');
+        }
+
+        // 添加横向滚动的触摸优化
+        const scrollContainer = document.querySelector('.attractions-scroll-container');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        scrollContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - scrollContainer.offsetLeft;
+            scrollLeft = scrollContainer.scrollLeft;
+        });
+
+        scrollContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+
+        scrollContainer.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+
+        scrollContainer.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scrollContainer.offsetLeft;
+            const walk = (x - startX) * 2;
+            scrollContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        // 底部导航点击事件
+        document.querySelectorAll('.nav-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+                // 检查是否点击的是AI图标
+                if (item.dataset.page === 'chat') {
+                    // 跳转到chat.html页面
+                    window.location.href = 'chat.html';
+                } else if (item.dataset.page === 'schedule') {
+                    // 跳转到schedule.html页面
+                    window.location.href = 'schedule.html';
+                } else {
+                    // 其他导航项的常规处理
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

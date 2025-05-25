@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录界面</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=ABeeZee:wght@400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, sans-serif;
+            /* 移除 overflow: hidden，允许滚动 */
+            min-height: 100vh;
+            overflow-x: hidden; /* 只禁用横向滚动 */
+        }
+
+        /* 登录界面容器 */
+        .login-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: #FFFFFF;
+            margin: 0 auto;
+            /* 移除固定宽高限制 */
+        }
+
+        /* 背景层 */
+        .background-layer {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: #D1F5FF;
+        }
+
+        /* 渐变覆盖层 */
+        .gradient-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, #002FFF 31.25%, rgba(255, 255, 255, 0) 100%);
+            mix-blend-mode: normal;
+            opacity: 0.16;
+        }
+
+        /* 主要内容框架 */
+        .main-frame {
+            position: relative;
+            width: 300px;
+            margin: 0 auto;
+            padding-top: 25vh; /* 使用视口高度单位 */
+            text-align: center;
+        }
+
+        /* 主标题 */
+        .main-title {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            font-style: normal;
+            font-weight: 300;
+            font-size: clamp(32px, 8vw, 44px); /* 响应式字体大小 */
+            line-height: 1.2;
+            color: #FFFFFF;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* 副标题 */
+        .subtitle {
+            font-family: 'ABeeZee', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            font-style: normal;
+            font-weight: 300;
+            font-size: clamp(14px, 4vw, 16px);
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 40vh; /* 使用视口高度 */
+        }
+
+        /* 按钮容器 */
+        .button-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* 注册按钮 */
+        .register-button {
+            width: 100%;
+            height: 50px;
+            background: #FFFFFF;
+            border-radius: 22px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 登录按钮 */
+        .login-button {
+            width: 100%;
+            height: 50px;
+            background: #9CC7FD;
+            border-radius: 22px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(156, 199, 253, 0.3);
+            background: #8BB8FC;
+        }
+
+        /* 按钮文字样式 */
+        .button-text {
+            font-family: 'ABeeZee';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 17px;
+            line-height: 25px;
+            letter-spacing: 3px;
+            color: #383838;
+        }
+
+        /* 删除顶部图像区域 */
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .main-frame {
+                width: 90%;
+                padding-top: 20vh;
+            }
+            
+            .subtitle {
+                margin-bottom: 30vh;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .main-frame {
+                padding-top: 15vh;
+            }
+            
+            .subtitle {
+                margin-bottom: 20vh;
+            }
+        }
+
+        /* 点击效果 */
+        .register-button:active,
+        .login-button:active {
+            transform: translateY(0px) scale(0.98);
+        }
+
+        /* 触摸效果 */
+        .button-pressed {
+            transform: translateY(0px) scale(0.98) !important;
+        }
+
+        /* 安全区域适配 */
+        @supports (padding: max(0px)) {
+            .button-container {
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- 背景层 -->
+        <div class="background-layer"></div>
+        
+        <!-- 渐变覆盖层 -->
+        <div class="gradient-overlay"></div>
+        
+        <!-- 主要内容框架 -->
+        <div class="main-frame">
+            <div class="main-title">登录界面</div>
+            <div class="subtitle">此处是一句浙大标语</div>
+        </div>
+        
+        <!-- 按钮容器 -->
+        <div class="button-container">
+            <!-- 注册按钮 -->
+            <button class="register-button" id="registerBtn">
+                <span class="button-text">注册</span>
+            </button>
+            
+            <!-- 登录按钮 -->
+            <button class="login-button" id="loginBtn">
+                <span class="button-text">登录</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleRegister() {
+            alert('注册功能');
+        }
+
+        function handleLogin() {
+            // 跳转到identity.html页面
+            window.location.href = 'identity.html';
+        }
+
+        // 获取按钮元素
+        const registerBtn = document.getElementById('registerBtn');
+        const loginBtn = document.getElementById('loginBtn');
+
+        // 注册按钮事件处理
+        registerBtn.addEventListener('click', handleRegister);
+        registerBtn.addEventListener('touchstart', function(e) {
+            this.classList.add('button-pressed');
+        });
+        registerBtn.addEventListener('touchend', function(e) {
+            setTimeout(() => {
+                this.classList.remove('button-pressed');
+            }, 150);
+        });
+
+        // 登录按钮事件处理
+        loginBtn.addEventListener('click', handleLogin);
+        loginBtn.addEventListener('touchstart', function(e) {
+            this.classList.add('button-pressed');
+        });
+        loginBtn.addEventListener('touchend', function(e) {
+            setTimeout(() => {
+                this.classList.remove('button-pressed');
+            }, 150);
+        });
+
+        // 防止页面回弹效果（可选）
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
