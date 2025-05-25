@@ -1,6 +1,6 @@
 # 旅行AI助手
 
-一个基于 Flask 构建的中文旅行对话助手，结合大模型与联网搜索功能，支持多轮对话规划旅行，还集成天气预警、学校介绍、导航界面与旅行计划等模块，带有现代化 UI 界面，支持登录、模块化页面导航。
+一个基于 Flask 构建的中文旅行对话助手，结合大模型与联网搜索功能，支持多轮对话规划旅行，还集成学校介绍、导航界面与旅行计划等模块，带有现代化 UI 界面，支持登录、模块化页面导航。
 
 ---
 
@@ -42,15 +42,16 @@ python main.py
 
 ## 项目结构
 ```
-travel-ai-assistant/
+ZJU-travel/
 ├── main.py
 ├── .env
 ├── templates/
-│   ├── chat.html           # 主UI入口（含侧边导航）
-│   ├── weather.html        # 天气模块
-│   ├── zju.html            # 浙江大学介绍
-│   ├── map.html            # 地图界面（占位）
-│   └── plan.html           # 旅行计划表
+│   ├── login.html           # 登录界面
+│   ├── identity.html        # 选择身份
+│   ├── home.html            # 首页
+│   ├── chat.html            # AI对话界面
+│   ├── map.html             # 导航界面
+│   └── schedule.html        # 日程表
 ├── static/                # 静态文件目录（CSS/图片等）
 └── requirements.txt       # Python依赖
 ```
